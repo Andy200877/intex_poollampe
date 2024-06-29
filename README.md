@@ -1,5 +1,5 @@
 ### <center>Intex Poollampe</center>
-![S1S2](/img/web.png?raw=true "Weboberfläche")
+![S1S2](/img/Web.png?raw=true "Weboberfläche")
 
 **Benötigte Hardware**
 - Nodemcu8266
