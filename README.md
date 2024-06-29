@@ -45,3 +45,16 @@ In dieser Version der Lampe gibt es folgende Neuerungen :
 - Filebrowser
 - Update des Flashe und Filesystems über Web
 
+
+**Flashen**
+Zum Flashen empfehle ich das [Flash Download Tool von Espressif Systems](https://www.espressif.com/en/support/download/other-tools "Flash Download Tool") 
+Als Startadresse der Flashfirmware muss 0x000000 angegeben werden.
+Die Adresse für die littlefs.bin ist 0x200000.
+
+Im LittleFS sind sämtliche Configurationen und die Webseiten gespeichert, bei einem neuen Flashen oder eines Formatierens des Filesystems macht der ESP wieder einen AccessPoint auf und Ihr müsst Eure Einstellungen anpassen.
+
+
+**Reset**
+Ein Reset der Wlan Konfiguration ist möglich.
+Dazu die Tasten S1 und S2 an der Lampe gedrückt halten und den die Lampe an das Stromnetz anschließen. Nach ca. 5 Sekunden könnt Ihr die Tasten loslassen und Euch wieder mit den Standart Logindaten mit dem Accesspoint der Lampe verbinden.
+
