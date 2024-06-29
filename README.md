@@ -53,8 +53,12 @@ Die Adresse für die littlefs.bin ist 0x200000.
 
 Im LittleFS sind sämtliche Configurationen und die Webseiten gespeichert, bei einem neuen Flashen oder eines Formatierens des Filesystems macht der ESP wieder einen AccessPoint auf und Ihr müsst Eure Einstellungen anpassen.
 
-
 **Reset**
 Ein Reset der Wlan Konfiguration ist möglich.
 Dazu die Tasten S1 und S2 an der Lampe gedrückt halten und den die Lampe an das Stromnetz anschließen. Nach ca. 5 Sekunden könnt Ihr die Tasten loslassen und Euch wieder mit den Standart Logindaten mit dem Accesspoint der Lampe verbinden.
+
+**Debug**
+Standartmässig sind alle Debug Informationen über die Serielle Schnittstelle des ESP deaktiviert.
+Zum einschalten der Debug Meldung muss nur folgender Link aufgerufen werden : http://IP-Adresse/debug/on
+Oder zum Ausschalten der Debug Meldungen http://IP-Adresse/debug/off
 
