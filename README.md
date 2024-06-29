@@ -22,6 +22,7 @@ Stelle nun die Verbindungen wie in den Bildern beschrieben her.
 Falls Du die erste Version der Poollampe nutzt, bitte die Verkabelung anpassen, da der D3 Anschluss am ESP nicht mehr verwendet wird.
 <img src="/img/nodemcu-vin.png" width="150">
 <img src="/img/S1S2.jpg" width="150">
+<img src="/img/hardware.jpg" width="150">
 
 
 **DS18B20 Sensoren**
