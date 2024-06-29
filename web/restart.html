@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>China Heater</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Intex Poollampe</h2>
+         <div class="content-box">
+         <b>Neustart</b>
+         <div id="neustarttext">
+            Soll der ESP neu gestartet werden?
+         </div>
+         <div id="neustarttextb" style="display: none;">
+            Der ESP startet jetzt neu.<br>Seite wird gleich neu geladen....
+         </div>            
+         <!-- Container für die Neustartbestätigung -->
+         <div id="neustartBestaetigung" style="display: none;">
+            <button id="neustartJa">Ja</button>
+            <button id="neustartNein">Nein</button>
+         </div>
+         
+         <div id="neustart">
+            <button id="neustartButton">Neustart</button>
+         </div>
+        </div>
+        
+        <div class="button-group-large">
+            <a href="index.html" class="red-button">Zurück</a>
+        </div>
+<footer>
+    <p><div id="build" style=""></div></p>
+    <div id="live-laufzeit"></div>
+</footer>
+
+<script>
+// JavaScript-Funktionen
+const version = "11";
+let isRestarting = false;
+
+function fetchData() {
+    fetch("/data")
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("build").innerHTML = `${data.build}/` + version + ' by Andreas Borchert';
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+        });
+}
+
+function buttonja() {
+    if (isRestarting) return;
+    isRestarting = true;
+    neustart.style.display = "none";
+    neustartBestaetigung.style.display = "block";
+    document.getElementById("neustarttext").textContent = "Wirklich neu starten?";
+}
+
+function buttonjanochmal() {
+    neustartBestaetigung.style.display = "none";
+    neustarttextb.style.display = "block";
+    neustarttext.style.display = "none";
+    var xhttp = new XMLHttpRequest();
+    var url = "/neustart";
+    xhttp.open("POST", url, true);
+    xhttp.send();
+    localStorage.setItem('isRestarting', 'true');
+    var zeitspanne = 5000;
+    setTimeout(function() {
+        window.location.href = "index.html"; // Zu index.html umleiten
+    }, zeitspanne);
+}
+
+function buttonnein() {
+    neustart.style.display = "block";
+    neustartBestaetigung.style.display = "none";
+    document.getElementById("neustarttext").textContent = "Soll der ESP neu gestartet werden?";
+    neustarttext.style.display = "block";
+    neustarttextb.style.display = "none";
+    isRestarting = false;
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    if (localStorage.getItem('isRestarting') === 'true') {
+        localStorage.removeItem('isRestarting');
+        return;
+    }
+    fetchData();
+    document.getElementById("neustartButton").addEventListener("click", buttonja);
+    document.getElementById("neustartJa").addEventListener("click", buttonjanochmal);
+    document.getElementById("neustartNein").addEventListener("click", buttonnein);
+});
+
+</script>
+
+</body>
+</html>

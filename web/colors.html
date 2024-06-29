@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intex Poollampe</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container" onclick="removeresponse()">
+        <h2>Intex Poollampe</h2>
+         <div class="content-box">
+         <b>Farben</b>
+		 <form id="myForm" onsubmit="submitForm(); return false;">
+    <table>
+        <tr>
+            <td align="left"><label for="innen1">Innen 1 : </label></td>
+            <td align="left"><select id="innen1" name="innen1"></select></td>
+        </tr>
+        <tr>
+            <td align="left"><label for="innen2">Innen 2 : </label></td>
+            <td align="left"><select id="innen2" name="innen2"></select></td>
+        </tr>
+        <tr>
+            <td align="left"><label for="innen3">Innen 3 : </label></td>
+            <td align="left"><select id="innen3" name="innen3"></select></td>
+        </tr>
+        <tr>
+            <td align="left"><label for="innen4">Innen 4 : </label></td>
+            <td align="left"><select id="innen4" name="innen4"></select></td>
+        </tr>
+        <tr>
+            <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+            <td align="left"><label for="aussen1">Aussen 1 : </label></td>
+            <td align="left"><select id="aussen1" name="aussen1"></select></td>
+        </tr>
+        <tr>
+            <td align="left"><label for="aussen2">Aussen 2 : </label></td>
+            <td align="left"><select id="aussen2" name="aussen2"></select></td>
+        </tr>
+        <tr>
+            <td align="left"><label for="aussen3">Aussen 3 : </label></td>
+            <td align="left"><select id="aussen3" name="aussen3"></select></td>
+        </tr>
+        <tr>
+            <td align="left"><label for="aussen4">Aussen 4 : </label></td>
+            <td align="left"><select id="aussen4" name="aussen4"></select></td>
+        </tr>
+        <tr>
+            <td align="left"><label for="aussen5">Aussen 5 : </label></td>
+            <td align="left"><select id="aussen5" name="aussen5"></select></td>
+        </tr>
+        <tr>
+            <td align="left"><label for="aussen6">Aussen 6 : </label></td>
+            <td align="left"><select id="aussen6" name="aussen6"></select></td>
+        </tr>
+        <tr>
+            <td align="left"><label for="aussen7">Aussen 7 : </label></td>
+            <td align="left"><select id="aussen7" name="aussen7"></select></td>
+        </tr>
+    </table>
+            </div>
+        <div id="serverResponse" class="response"></div>
+        </div>
+        
+        <div class="button-group-large">
+            <input type="submit" class="blue-button" style="width: 240px;" value="Speichern">
+            <a href="index.html" class="red-button">Zurück</a>
+        </div>
+        </form>
+        
+<footer>
+    <p><div id="build" style=""></div></p>
+</footer>
+    </div>
+
+</body>
+
+<script>
+
+const version = "11";
+function fetchData() {
+            fetch("/data")
+                .then(response => response.json())
+                .then(data => {
+                    // Define the possible options
+                    const options = ["Aus", "Weiss", "Grün", "Grünblau", "Blau", "Violett", "Farbwechsel"];
+
+                    // Populate the select elements with the options
+                    const populateSelect = (selectId, value) => {
+                        const select = document.getElementById(selectId);
+                        options.forEach(option => {
+                            const opt = document.createElement('option');
+                            opt.value = option;
+                            opt.textContent = option;
+                            if (option === value) {
+                                opt.selected = true;
+                            }
+                            select.appendChild(opt);
+                        });
+                    };
+
+                    populateSelect('innen1', data.in1);
+                    populateSelect('innen2', data.in2);
+                    populateSelect('innen3', data.in3);
+                    populateSelect('innen4', data.in4);
+                    populateSelect('aussen1', data.out1);
+                    populateSelect('aussen2', data.out2);
+                    populateSelect('aussen3', data.out3);
+                    populateSelect('aussen4', data.out4);
+                    populateSelect('aussen5', data.out5);
+                    populateSelect('aussen6', data.out6);
+                    populateSelect('aussen7', data.out7);
+
+                    // Update build information
+                    document.getElementById("build").innerHTML = `${data.build}/` + version + ' by Andreas Borchert';
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+}
+
+function submitForm() {
+    const formData = new FormData(document.getElementById("myForm"));
+    const jsonData = {};
+    formData.forEach((value, key) => {
+        jsonData[key] = value;
+        });
+    
+    fetch("/submitcolors", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+            },
+                body: JSON.stringify(jsonData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text();
+    })
+    .then(data => {
+        console.log("Response from server:", data);
+        fetchData(); // Aktualisiere die Live-Daten nach dem Absenden des Formulars
+        // Zeige die Antwort des Servers als Benachrichtigung an
+        const serverResponse = document.getElementById("serverResponse");
+        serverResponse.innerText = data;
+        serverResponse.classList.add("visible");
+    })
+    .catch(error => {
+        console.error("Error submitting form:", error);
+    });
+}
+
+// JavaScript, um die Antwort auszublenden, wenn ein Eingabefeld geändert wird
+
+fetchData();
+//setInterval(fetchData, 2000); // Aktualisiere Daten alle 5 Sekunden
+
+function removeresponse() {
+    const serverResponse = document.getElementById("serverResponse");
+    serverResponse.classList.remove("visible");
+}
+
+</script>
+</html>

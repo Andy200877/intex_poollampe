@@ -1,0 +1,186 @@
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intex Poollampe</title>
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Intex Poollampe</h2>
+		 <div class="content-box" onclick="removeresponse()">
+		 <b>Temperatursensoren</b>
+                <table id="sensorTable">
+                    <tr>
+						<td>ID</td>
+                        <td>Offset</td>
+                        <td>Beschreibung</td>
+                    </tr>
+                </table>
+		</div>
+        <div id="serverResponse" class="response"></div>
+        </div>
+        
+        <div class="button-group-large">
+            <button class="blue-button" style="width: 240px;" onclick="saveData()">Speichern</button>
+            <a href="index.html" class="red-button">Zurück</a>
+        </div>
+        </form>
+        
+<footer>
+    <p><div id="build" style=""></div></p>
+</footer>
+
+
+</body>
+</html>
+
+<script>
+const version = "11";
+    var selectedSensor = "";
+function fetchDataBuild() {
+	fetch("/data")
+	.then(response => response.json())
+	.then(data => {
+		document.getElementById("build").innerHTML = `${data.build}/` + version + ' by Andreas Borchert';
+	})
+	.catch(error => {
+		console.error('Error fetching data:', error);
+		});
+}
+
+function fetchData() {
+    // AJAX-Anfrage zum Abrufen der JSON-Daten
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                // JSON-Daten erhalten
+                try {
+                    var sensorData = JSON.parse(this.responseText);
+                    updateTable(sensorData);
+                } catch (e) {
+                    console.error("Fehler beim Parsen der JSON-Daten:", e);
+                    console.error("Response Text:", this.responseText);
+                }
+            } else {
+                console.error("Fehler beim Laden der JSON-Datei. Status:", this.status);
+                console.error("Response Text:", this.responseText);
+            }
+        }
+    };
+    // AJAX-Anfrage senden
+    xhr.open("GET", "/sensor_data.json", true);
+    xhr.send();
+}
+
+
+
+function updateTable(sensorData) {
+    var table = document.getElementById("sensorTable");
+    
+    // Clear existing rows except for the header row
+        while (table.rows.length > 1) {
+            table.deleteRow(1);
+        }
+
+    // Iterate through sensorData and create table rows
+    for (var sensorID in sensorData) {
+        var row = table.insertRow();
+
+        // Cell for Info icon
+        var cell1 = row.insertCell(0);
+        var infoIcon = document.createElement("div");
+        infoIcon.className = "info-icon";
+        infoIcon.title = sensorID;
+        infoIcon.setAttribute("ontouchstart", "displaySensorID(this)");
+        cell1.appendChild(infoIcon);
+
+        // Cell for Offset input
+        var cell2 = row.insertCell(1);
+        var offsetInput = document.createElement("input");
+        offsetInput.type = "number";
+        offsetInput.step = "0.1";
+        offsetInput.min = "-99.9";
+        offsetInput.max = "99.9";
+        offsetInput.id = sensorID + "_offset";
+        offsetInput.value = sensorData[sensorID].offset;
+        offsetInput.onclick = function() {
+            removeresponse();
+        };
+        cell2.appendChild(offsetInput);
+
+        // Cell for Description input
+        var cell3 = row.insertCell(2);
+        var descriptionInput = document.createElement("input");
+        descriptionInput.type = "text";
+        descriptionInput.id = sensorID + "_description";
+        descriptionInput.value = sensorData[sensorID].description;
+        descriptionInput.onclick = function() {
+            removeresponse();
+        };
+        cell3.appendChild(descriptionInput);
+    }
+}
+		
+		
+    function saveData() {
+        // JSON-Daten aus den Textfeldern lesen und in ein Objekt speichern
+        var newData = {};
+        var table = document.getElementById("sensorTable");
+        for (var i = 1; i < table.rows.length; i++) {
+            var sensorID = table.rows[i].cells[0].querySelector(".info-icon").title;
+            var offset = document.getElementById(sensorID + "_offset").value;
+            var description = document.getElementById(sensorID + "_description").value;
+            newData[sensorID] = {
+                "description": description,
+				"offset": offset
+            };
+        }
+        // JSON-Daten in einen String konvertieren
+        var jsonData = JSON.stringify(newData);
+    fetch("/submittemp", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+            },
+                body: JSON.stringify(jsonData)
+    })
+
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text();
+    })
+    .then(data => {
+        console.log("Response from server:", data);
+        fetchData(); // Aktualisiere die Live-Daten nach dem Absenden des Formulars
+        // Zeige die Antwort des Servers als Benachrichtigung an
+        const serverResponse = document.getElementById("serverResponse");
+        serverResponse.innerText = data;
+        serverResponse.classList.add("visible");
+    })
+    .catch(error => {
+        console.error("Error submitting form:", error);
+    });
+}
+
+    function displaySensorID(element) {
+        var sensorID = element.title;
+        alert("Sensor ID: " + sensorID);
+    }
+	
+function removeresponse() {
+    const serverResponse = document.getElementById("serverResponse");
+    serverResponse.classList.remove("visible");
+}
+
+
+	fetchDataBuild();
+	fetchData();
+</script>
+
+</body>
+</html>

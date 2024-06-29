@@ -1,0 +1,221 @@
+body {
+    background-color: black;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.container {
+    margin: 0 auto;
+    padding: 10px;
+}
+
+h2 {
+    font-size: 2em;
+    background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    background-size: 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow 5s linear infinite;
+    -webkit-animation: rainbow 5s linear infinite; /* Für ältere Versionen von Safari und Chrome */
+	margin-top: 0;
+}
+
+@keyframes rainbow {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+@-webkit-keyframes rainbow { /* Für ältere Versionen von Safari und Chrome */
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+.status {
+    margin-bottom: 20px;
+}
+
+.button-group-large {
+    display: flex;
+    flex-direction: column; /* Ändern der Ausrichtung auf vertikal */
+    align-items: center; /* Zentrieren der Buttons horizontal */
+}
+
+.color-button, .blue-button, .red-button {
+    margin: 5px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    color: white;
+    border-radius: 5px;
+}
+
+.centered-table {
+	margin: 0 auto;
+}
+.centered-table td {
+	text-align:left;
+}
+
+    .centered-form {
+        text-align: center;
+    }
+
+    .centered-form table {
+        margin: auto;
+    }
+
+    .centered-form table td {
+        padding: 5px;
+    }
+
+    .centered-form input[type="text"],
+    .centered-form input[type="password"],
+    .centered-form input[type="number"],
+    .centered-form input[type="checkbox"] {
+        width: 200px; /* Ändern Sie die Breite nach Bedarf */
+    }
+
+
+        #networks {
+            display: none;
+            margin: auto; /* Zentriere die Auswahlliste innerhalb des Containers */			
+        }
+
+.color-button {
+    margin: 5px;
+    padding: 10px;
+    cursor: pointer;
+    color: white;
+    border: 1px solid transparent; /* Rand für alle Buttons */
+    border-radius: 4px;
+}
+
+.color-button.aus {
+    background-color: black;
+    border-color: white; /* Randfarbe für Aus-Button */
+}
+
+.color-button.weiss {
+    background-color: white;
+    color: black;
+    border-color: black; /* Randfarbe für Weiß-Button */
+}
+
+.color-button.farbwechsel {
+    background: linear-gradient(45deg, violet, blue);
+    border-color: none; /* Kein Rand für Farbwechsel-Button */
+}
+
+.color-button.grün {
+    background-color: green;
+    border-color: transparent; /* Kein Rand für Grün-Button */
+}
+
+.color-button.grünblau {
+    background-color: #00CED1; /* Türkisfarbe */
+    border-color: transparent; /* Kein Rand für Grünblau-Button */
+}
+
+.color-button.blau {
+    background-color: blue;
+    border-color: transparent; /* Kein Rand für Blau-Button */
+}
+
+.color-button.violett {
+    background-color: #B51BD1; /* Lila Farbe */
+    border-color: transparent; /* Kein Rand für Violett-Button */
+}
+
+.color-button:hover {
+    opacity: 0.8;
+}
+
+.blue-button {
+    background-color: #1e90ff;
+    border-radius: 10px;
+    width: 200px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    line-height: 40px; /* Vertikale Zentrierung */
+}
+
+.red-button {
+    background-color: red;
+    border-radius: 10px;
+    width: 200px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    line-height: 40px; /* Vertikale Zentrierung */
+}
+
+.blue-button, .red-button {
+    height: 50%; /* Änderung der Höhe auf 50% */
+    line-height: initial; /* Zurücksetzen der vertikalen Ausrichtung */
+}
+
+
+.main-content a {
+    color: white; /* Standard-Schriftfarbe */
+}
+
+.main-content a:hover {
+    color: lightgray; /* Schriftfarbe beim Überfahren */
+}
+
+    .info-icon:hover + .sensor-id {
+        display: inline; /* Anzeigen der Sensor-ID bei Mouseover über dem Info-Symbol */
+    }
+
+    .info-icon {
+        cursor: pointer; /* Ändern des Cursors in einen Zeiger, um anzuzeigen, dass es anklickbar ist */
+    }
+
+    .info-icon::after {
+        content: "ℹ"; /* Das Info-Symbol (Informationssymbol) */
+        margin-left: 5px; /* Abstand zwischen dem Symbol und dem Text */
+    }
+
+.response {
+	height: 20px; /* Feste Höhe, damit der Container immer Platz einnimmt */
+    overflow: hidden; 
+    visibility: hidden;
+    transition: visibility 0.3s, opacity 0.3s;
+    opacity: 0; /* Unsichtbar, wenn keine Nachricht */
+	color: red;
+}
+
+.response.visible {
+	visibility: visible;
+    opacity: 1; /* Sichtbar, wenn eine Nachricht vorhanden ist */
+}
+	
+.content-box {
+    background-color: #333;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px auto; /* Auto-Margin links und rechts für zentrierte Ausrichtung */
+    display: inline-block; /* Als Inline-Block-Element behandeln */
+    text-align: center; /* Zentriert den Inhalt horizontal */
+}
+
+#sensorTable {
+    margin: 0 auto; /* Tabelle zentrieren */
+    text-align: left; /* Text in den Zellen links ausrichten */
+}
+	
+footer {
+    margin-top: 20px;
+    font-size: 0.8em;
+}

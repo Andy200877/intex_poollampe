@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intex Poollampe</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+
+</header>
+
+
+<div class="container">
+
+    <div class="main-content">
+	<script>
+	function fetchData() {
+	fetch("/data")
+	.then(response => response.json())
+	.then(data => {
+		document.getElementById("build").innerHTML = `${data.build}/` + version + ' by Andreas Borchert';
+	})
+	.catch(error => {
+		console.error('Error fetching data:', error);
+		});
+}
+
+fetchData();
+	const version = "11";
+	  document.addEventListener('DOMContentLoaded', () => {
+		list(JSON.parse(localStorage.getItem('sortBy')));
+		btn.addEventListener('click', () => {
+		  if (!confirm(`Wirklich formatieren? Alle Daten gehen verloren.\nDu musst anschließend fs.html wieder laden.`)) event.preventDefault();
+		});
+	  });
+	  function list(to){
+		let myList = document.querySelector('main'), noted = '';
+		fetch(`?sort=${to}`).then( (response) => {
+          return response.json();
+        }).then((json) => {
+		  myList.innerHTML = '<nav><input type="radio" id="/" name="group" checked="checked"><label for="/"> &#128193;</label><span id="cr">+&#128193; </nav></span><span id="si"></span>';
+		  document.querySelector('form').setAttribute('action', '/upload?f=');
+          for (var i = 0; i < json.length - 1; i++) {
+		    let dir = '', f = json[i].folder, n = json[i].name;
+		    if (f != noted) {
+			  noted = f;
+			  dir = `<nav><input type="radio" id="${f}" name="group"><label for="${f}"></label> &#128193; ${f} <a href="?delete=/${f}">&#x1f5d1;&#xfe0f;</a></nav>`;
+			}
+            if (n != '') dir += `<li><a href="${f}/${n}">${n}</a><small> ${json[i].size}</small><a href="${f}/${n}"download="${n}"> Download</a> or<a href="?delete=${f}/${n}"> Delete</a>`;
+            myList.insertAdjacentHTML('beforeend', dir);
+          }
+          myList.insertAdjacentHTML('beforeend', `<br><li><b id="so">${to ? '&#9660;' : '&#9650;'} LittleFS</b> belegt ${json[i].usedBytes.replace(".00", "")} von ${json[i].totalBytes.replace(".00", "")}`);
+          var free = json[i].freeBytes;
+		  cr.addEventListener('click', () => {
+			document.getElementById('no').classList.toggle('no');
+		  });
+		  so.addEventListener('click', () => {
+			list(to=++to%2);
+			localStorage.setItem('sortBy', JSON.stringify(to));
+		  });
+		  document.addEventListener('change', (e) => {
+		    if (e.target.id == 'fs') {
+		  	  for (var bytes = 0, i = 0; i < event.target.files.length; i++) bytes += event.target.files[i].size;
+              for (var output = `${bytes} Byte`, i = 0, circa = bytes / 1024; circa > 1; circa /= 1024) output = circa.toFixed(2) + [' KB', ' MB', ' GB'][i++];
+              if (bytes > free) {
+                si.innerHTML = `<li><b> ${output}</b><strong> Ungenügend Speicher frei</strong></li>`;
+                up.setAttribute('disabled', 'disabled');
+              } 
+              else {
+			    si.innerHTML = `<li><b>Dateigröße:</b> ${output}</li>`;
+                up.removeAttribute('disabled');
+              }
+			}
+            document.querySelectorAll(`input[type=radio]`).forEach(el => { if (el.checked) document.querySelector('form').setAttribute('action', '/upload?f=' + el.id)});
+          });
+		  document.querySelectorAll('[href^="?delete=/"]').forEach(node => {
+            node.addEventListener('click', () => {
+	          if (!confirm('Sicher!')) event.preventDefault();
+			});
+		  });
+	    });
+      }
+
+ 
+  	  
+	</script>
+  </head>
+  <body>
+	<center><h2>Intex Poollampe</h2></center>
+	<form method="post" enctype="multipart/form-data">
+	  <center><input id="fs" type="file" name="up[]" multiple> <button id="up" disabled>Upload</button></center><br>
+	</form>
+	<form id="no" class="no" method="POST">
+	  <center><input name="new" placeholder="Ordner Name" pattern="[^\x22/%&\\:;]{1,31}" title="Zeichen &#8220; % & / : ; \  sind nicht erlaubt." required=""><button>Create</button></center><br>
+	</form>
+	<main></main>
+	<form action="/format" method="POST">
+	  <center><button id="btn">Format LittleFS</button></center>
+	</form></center>
+    </div><br>
+	        <div class="button-group-large">
+			<a href="index.html" class="red-button">Zurück</a>
+        </div>
+
+
+<footer>
+    <p><div id="build" style=""></div></p>
+	<div id="live-laufzeit" style="font-size: 10px;"></div>
+</footer>
+</div>
+</body>
+</html>

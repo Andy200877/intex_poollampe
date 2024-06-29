@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intex Poollampe</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="styles.css">
+<style>
+.cell-label {
+    text-align: left;
+    width: auto;
+}
+
+.cell-value {
+    text-align: left;
+    width: auto;
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <h2>Intex Poollampe</h2>
+        <div class="content-box" id="infoTableContainer">
+            <table id="infoTable">
+                <!-- Hier werden die Daten eingefügt -->
+            </table>
+        </div>
+        
+        <div class="button-group-large">
+            <a href="index.html" class="red-button">Zurück</a>
+        </div>
+
+    </div>
+
+    <script>
+        const version = "11";
+
+        function fetchData() {
+            fetch("/info")
+            .then(response => response.json())
+            .then(data => {
+                // Daten erfolgreich abgerufen, jetzt Tabelle aktualisieren
+                updateInfoTable(data);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+
+        function updateInfoTable(data) {
+            const infoTable = document.getElementById('infoTable');
+
+            // Leere die vorhandene Tabelle
+            infoTable.innerHTML = '';
+
+           function addRow(label, value) {
+                const row = infoTable.insertRow();
+                
+                // Zelle für die Beschreibung (linksbündig)
+                const cellLabel = row.insertCell();
+                cellLabel.textContent = label;
+                cellLabel.classList.add('cell-label');
+
+                // Zelle für den Wert (linksbündig)
+                const cellValue = row.insertCell();
+                cellValue.textContent = value;
+                cellValue.classList.add('cell-value');
+            }
+
+
+            // Sensoren
+			infoTable.insertAdjacentHTML('beforeend', '<tr><td colspan="2" align="center"><b>Temperatur Sensoren</b></td></tr>');
+            for (let key in data) {
+                if (key !== 'wifiInfo' && key !== 'mqtt' && key !== 'systemInfo' && key !== 'status') {
+                    addRow(data[key].description, `${data[key].temperature} °C`);
+                }
+            }
+            // Horizontale Linie einfügen
+			infoTable.insertAdjacentHTML('beforeend', '<tr><td colspan="2" align="center"><b>Software</b></td></tr>');
+            addRow('Version', data.status.build);
+            addRow('Laufzeit', data.status.laufzeittext);
+			
+
+
+            // Horizontale Linie einfügen
+			infoTable.insertAdjacentHTML('beforeend', '<tr><td colspan="2" align="center"><b>WiFi</b></td></tr>');
+
+            // Wifi-Info
+			addRow('SSID', data.wifiInfo.ssid);
+			addRow('RSSI', `${data.wifiInfo.rssi} dBm`);
+            addRow('Mode', data.wifiInfo.mode);
+            addRow('Kanal', data.wifiInfo.channel);
+            addRow('BSSID', data.wifiInfo.bssid);
+			
+			infoTable.insertAdjacentHTML('beforeend', '<tr><td colspan="2" align="center"><b>IP-Adressen</b></td></tr>');
+
+			addRow('Mac Adresse', data.wifiInfo.mac);
+            addRow('IP Adresse', data.wifiInfo.ip);
+            addRow('Gateway', data.wifiInfo.gateway);
+            addRow('Subnet Mask', data.wifiInfo.subnetMask);
+            addRow('DNS 1', data.wifiInfo.dns1);
+            addRow('DNS 2', data.wifiInfo.dns2);
+
+            // Horizontale Linie einfügen
+			infoTable.insertAdjacentHTML('beforeend', '<tr><td colspan="2" align="center"><b>MQTT</b></td></tr>');
+
+            // MQTT
+			addRow('Aktiviert', data.mqtt.anaus);
+            addRow('Host', data.mqtt.host);
+            addRow('Port', data.mqtt.port);
+            addRow('User', data.mqtt.user);
+            addRow('Status', data.mqtt.status);			
+
+            // Horizontale Linie einfügen
+			infoTable.insertAdjacentHTML('beforeend', '<tr><td colspan="2" align="center"><b>ESP</b></td></tr>');
+
+            // Systeminformationen
+            addRow('ESP Chip ID', data.systemInfo.espChipID);
+			addRow('Flash Chip ID', data.systemInfo.flashChipID);
+			addRow('Reset Reason', data.systemInfo.resetReason);
+			infoTable.insertAdjacentHTML('beforeend', '<tr><td colspan="2" align="center">&nbsp;</td></tr>');
+			addRow('Flash Größe', `${data.systemInfo.flashChipSize} kB`);
+			addRow('Flash benutzt', `${data.systemInfo.programSize} kB`);
+			addRow('Flash frei', `${data.systemInfo.freeSketchSpace} kB`);
+			infoTable.insertAdjacentHTML('beforeend', '<tr><td colspan="2" align="center">&nbsp;</td></tr>');
+			addRow('FS Größe', `${data.systemInfo.filesystemSize} kB`);
+			addRow('FS benutzt', `${data.systemInfo.usedSpace} kB`);
+			addRow('FS frei', `${data.systemInfo.freeSpace} kB`);
+			infoTable.insertAdjacentHTML('beforeend', '<tr><td colspan="2" align="center">&nbsp;</td></tr>');
+			addRow('freier Arbeitsspeicher', `${data.systemInfo.freeHeap} kB`);
+        }
+
+        // Daten beim Laden der Seite und dann alle 5 Sekunden aktualisieren
+        fetchData();
+        setInterval(fetchData, 5000); // Aktualisiere Daten alle 5 Sekunden
+    </script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intex Poollampe</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Intex Poollampe</h2>
+         <div class="content-box" onclick="removeresponse()">
+         <b>Farben beim Start</b><br>
+		 Welche Farbe soll beim Start eingeschaltet werden ?
+        <form id="myForm" onsubmit="submitForm(); return false;">
+                <table class="centered-table">
+                    <tr>
+                        <td align="left"><label for="selectIn">Innen : </label></td>
+                        <td align="left">
+                            <select id="selectIn" name="selectIn" onclick="removeresponse()">
+                                <!-- Optionen werden dynamisch eingefügt -->
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left"><label for="selectOut">Außen : </label></td>
+                        <td align="left">
+                            <select id="selectOut" name="selectOut" onclick="removeresponse()">
+                                <!-- Optionen werden dynamisch eingefügt -->
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        <div id="serverResponse" class="response"></div>
+        </div>
+        
+        <div class="button-group-large">
+            <input type="submit" class="blue-button" style="width: 240px;" value="Speichern">
+            <a href="index.html" class="red-button">Zurück</a>
+        </div>
+        </form>
+        
+<footer>
+    <p><div id="build" style=""></div></p>
+</footer>
+    </div>
+
+</body>
+
+<script>
+
+const version = "11";
+        function fetchData() {
+            fetch("/data")
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("build").innerHTML = `${data.build}/` + version + ' by Andreas Borchert';
+
+                const selectIn = document.getElementById("selectIn");
+                const selectOut = document.getElementById("selectOut");
+
+                selectIn.innerHTML = "";
+                selectOut.innerHTML = "";
+
+                // Innen-Optionen hinzufügen
+                for (let i = 1; i <= 4; i++) {
+                    const optionElement = document.createElement("option");
+                    const colorKey = `in${i}`;
+					optionElement.value = i - 1;
+                    optionElement.text = `${data[colorKey]}`;
+                    if (data.startinnen === i - 1) {
+                        optionElement.selected = true;
+                    }
+                    selectIn.appendChild(optionElement);
+                }
+
+                // Außen-Optionen hinzufügen
+                for (let i = 1; i <= 7; i++) {
+                    const optionElement = document.createElement("option");
+                    const colorKey = `out${i}`;
+					optionElement.value = i - 1;
+                    optionElement.text = `${data[colorKey]}`;
+                    if (data.startaussen === i - 1) {
+                        optionElement.selected = true;
+                    }
+                    selectOut.appendChild(optionElement);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+
+
+function submitForm() {
+    const formData = new FormData(document.getElementById("myForm"));
+    const jsonData = {};
+    formData.forEach((value, key) => {
+        jsonData[key] = value;
+        });
+    
+    fetch("/submitstart", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+            },
+                body: JSON.stringify(jsonData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text();
+    })
+    .then(data => {
+        console.log("Response from server:", data);
+        fetchData(); // Aktualisiere die Live-Daten nach dem Absenden des Formulars
+        // Zeige die Antwort des Servers als Benachrichtigung an
+        const serverResponse = document.getElementById("serverResponse");
+        serverResponse.innerText = data;
+        serverResponse.classList.add("visible");
+    })
+    .catch(error => {
+        console.error("Error submitting form:", error);
+    });
+}
+
+// JavaScript, um die Antwort auszublenden, wenn ein Eingabefeld geändert wird
+
+fetchData();
+//setInterval(fetchData, 2000); // Aktualisiere Daten alle 5 Sekunden
+
+function removeresponse() {
+    const serverResponse = document.getElementById("serverResponse");
+    serverResponse.classList.remove("visible");
+}
+
+</script>
+</html>

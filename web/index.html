@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intex Poollampe</title>
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Intex Poollampe</h2>
+
+		
+        <div class="status" id="pool-color-section">
+    <span id="pool-color">Farbe Pool: <span id="color-in"></span></span>
+            <div class="button-group" id="pool-buttons"></div>
+        </div>
+        
+        <div class="status" id="outside-color-section">
+    <span id="outside-color">Farbe Außen: <span id="color-out"></span></span>
+            <div class="button-group" id="outside-buttons"></div>
+        </div>
+        
+
+        <div class="button-group-large">
+            <a href="setup.html" class="blue-button">Einstellungen</a>
+            <a href="info.html" class="blue-button">Informationen</a>
+            <a href="restart.html" class="red-button">Restart</a>
+        </div>
+
+        <footer>
+    <p><div id="build" style=""></div></p>
+    <div id="live-laufzeit"></div>
+        </footer>
+    </div>
+</body>
+</html>
+<script>
+const version = "11";
+
+        function fetchData() {
+            fetch("/data")
+                .then(response => response.json())
+                .then(data => {
+                    const colorInIndex = data.colorin; // Index für Farbe innen
+                    const colorOutIndex = data.colorout; // Index für Farbe außen
+
+                    // Textinhalt setzen, wenn die Elemente gefunden wurden
+                    const colorInElement = document.getElementById("color-in");
+                    const colorOutElement = document.getElementById("color-out");
+
+                    if (colorInElement) {
+                        colorInElement.textContent = data["in" + (colorInIndex + 1)];
+                    } else {
+                        console.error('Element with id "color-in" not found');
+                    }
+
+                    if (colorOutElement) {
+                        colorOutElement.textContent = data["out" + (colorOutIndex + 1)];
+                    } else {
+                        console.error('Element with id "color-out" not found');
+                    }
+
+                    // Weitere Aktualisierungen oder Operationen hier ausführen
+                    document.getElementById("live-laufzeit").innerHTML = `<span style="font-size:10px;">${data.laufzeittext}</span>`;
+                    document.getElementById("build").innerHTML = `${data.build}/` + version + ' by Andreas Borchert';
+
+                    // Generiere Pool-Buttons
+                    generateUniqueColorButtons("pool-buttons", ["in1", "in2", "in3", "in4"], data, "innen");
+
+                    // Generiere Außen-Buttons
+                    generateUniqueColorButtons("outside-buttons", ["out1", "out2", "out3", "out4", "out5", "out6", "out7"], data, "aussen");
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+        function generateUniqueColorButtons(containerId, keys, data, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ''; // Clear existing buttons
+
+            const usedColors = new Set(); // Set zur Überprüfung bereits verwendeter Farben
+
+            keys.forEach((key, index) => {
+                const color = data[key].toLowerCase();
+                if (!usedColors.has(color)) { // Überprüfen, ob Farbe bereits verwendet wurde
+                    usedColors.add(color); // Farbe zum Set hinzufügen, um Duplikate zu verhindern
+
+                    const button = document.createElement("button");
+                    button.className = `color-button ${color}`;
+                    button.innerText = data[key];
+                    button.onclick = () => setColor(type, index);
+                    container.appendChild(button);
+                }
+            });
+        }
+
+function setColor(type, index) {
+    const data = {
+        [type]: index
+    };
+
+    fetch("/setcolor", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text();
+    })
+    .then(data => {
+        console.log("Response from server:", data);
+        fetchData(); // Aktualisiere die Live-Daten nach dem Absenden des Formulars
+    })
+    .catch(error => {
+        console.error("Error submitting form:", error);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    if (localStorage.getItem('isRestarting') === 'true') {
+        localStorage.removeItem('isRestarting');
+        return;
+    }
+});
+
+
+		
+		
+ fetchData();
+ setInterval(fetchData, 2000); // Aktualisiere Daten alle 5 Sekunden
+</script>
+

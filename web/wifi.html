@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>China Heater</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <div class="container">
+        <h2>Intex Poollampe</h2>
+         <div class="content-box" onclick="removeresponse()">
+         <b>WiFi Settings</b>
+            <form id="myForm" onsubmit="submitForm(); return false;">
+                <table>
+                    <tr><td><input type="radio" id="wlanmode1" name="wlanauswahl" value="1" onchange="toggleWiFiSettings()"></td><td align="left">Access Point</td></tr>
+                    <tr><td><input type="radio" id="wlanmode2" name="wlanauswahl" value="2" onchange="toggleWiFiSettings()"></td><td align="left">mit Wlan verbinden</td></tr>
+                </table>
+                <div id="WiFiSettings1" style="display: none;">
+                    <table>
+                        <tr>
+                            <td><label for="apssid">SSID:</label></td>
+                            <td><input type="text" id="apssid" name="apssid" onclick ="removeresponse()" required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="appsk">Passwort:</label></td>
+                            <td><input type="password" id="appsk" name="appsk" onclick ="removeresponse()" required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="apch">Channel:</label></td>
+                            <td><input type="number" min="1" max="13" id="apch" name="apch" onclick ="removeresponse()" required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="apch">IP Adresse:</label></td>
+                            <td><input type="text" minlength="7" maxlength="15" size="15" pattern="^((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$" id="apip" name="apip" onclick ="removeresponse()" required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="apch">Gateway:</label></td>
+                            <td><input type="text" minlength="7" maxlength="15" size="15" pattern="^((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$" id="apgw" name="apgw" onclick ="removeresponse()" required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="apch">Subnet:</label></td>
+                            <td><input type="text" minlength="7" maxlength="15" size="15" pattern="^((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$" id="apsub" name="apsub" onclick ="removeresponse()" required></td>
+                        </tr>                   
+                    </table>
+                </div>
+        
+                <div id="WiFiSettings2" style="display: none;">
+
+				<select id="networks" onchange="selectNetwork(this)">
+				<option value="" disabled selected>Bitte wählen...</option>
+				</select><br>
+				<button type="button" id="scanButton">WLAN Netzwerke suchen</button>
+
+                    <table>
+                        <tr><td align="right">SSID : </td><td align="left"><input type="text" id="ssid" name="ssid" onclick ="removeresponse()"></td></tr>
+                        <tr><td align="right">PSK : </td><td align="left"><input type="password" id="psk" name="psk" onclick ="removeresponse()"></td></tr>
+                    </table>
+                </div>
+                    
+          </div>
+        <div id="serverResponse" class="response"></div>
+        </div>
+        
+        <div class="button-group-large">
+            <input type="submit" class="blue-button" style="width: 240px;" value="Speichern">
+            <a href="index.html" class="red-button">Zurück</a>
+        </div>
+        </form>
+        
+<footer>
+    <p><div id="build" style=""></div></p>
+</footer>
+
+</body>
+</html>
+<script>
+const version = "11";
+let isFirstLoad = true;
+function fetchData() {
+    fetch("/datawifi")
+    .then(response => response.json())
+    .then(data => {
+    
+        // Aktualisiere die Eingabefelder mit den aktuellen Werten von x und y
+    if (isFirstLoad) {
+        document.getElementById("apssid").value = data.apssid;
+        document.getElementById("appsk").value = data.appsk;
+        document.getElementById("apch").value = data.apchannel;
+        document.getElementById("apip").value = data.apip;
+        document.getElementById("apsub").value = data.apnetmask;
+        document.getElementById("apgw").value = data.apgw;
+        document.getElementById("ssid").value = data.stassid;
+        document.getElementById("psk").value = data.stapsk;
+		document.getElementById("build").innerHTML = `${data.build}/` + version + ' by Andreas Borchert';
+        
+        // 1=AP-MODE 2=STA 3=SETUP 4= WLAN OFF
+        if (data.wlanmode == "1") {
+            WiFiSettings1.style.display = "block";
+            document.getElementById('wlanmode1').checked = true;
+            WiFiSettings2.style.display = "none";
+        }
+        if (data.wlanmode == "2") {
+            WiFiSettings2.style.display = "block";
+            document.getElementById('wlanmode2').checked = true;
+            WiFiSettings1.style.display = "none";
+        }           
+            isFirstLoad = false; // Setze die Flag auf false, um zu markieren, dass die Werte eingetragen wurden
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+        });
+}
+
+
+
+
+function submitForm() {
+    const formData = new FormData(document.getElementById("myForm"));
+    const jsonData = {};
+    formData.forEach((value, key) => {
+        jsonData[key] = value;
+        });
+    
+    fetch("/submitwifi", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+            },
+                body: JSON.stringify(jsonData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text();
+    })
+    .then(data => {
+        console.log("Response from server:", data);
+        fetchData(); // Aktualisiere die Live-Daten nach dem Absenden des Formulars
+        // Zeige die Antwort des Servers als Benachrichtigung an
+        const serverResponse = document.getElementById("serverResponse");
+        serverResponse.innerText = data;
+        serverResponse.classList.add("visible");
+		document.getElementById("serverResponse").style.display = "block";
+    })
+    .catch(error => {
+        console.error("Error submitting form:", error);
+    });
+}
+
+ fetchData();
+
+
+function showNetworks(networks) {
+            var selectElement = document.getElementById("networks");
+
+            // Leere die Auswahlliste, bevor wir neue Einträge hinzufügen
+            selectElement.innerHTML = '';
+
+            // Iteriere durch die Liste der Netzwerke und füge sie der Auswahlliste hinzu
+            networks.forEach(function(network) {
+                var option = document.createElement("option");
+                option.textContent = network.ssid + " (RSSI: " + network.rssi + ")";
+                option.value = network.ssid;
+                selectElement.appendChild(option);
+            });
+	var scanButton = document.getElementById("scanButton");
+    scanButton.disabled = false;
+    scanButton.textContent = "WLAN Netzwerke suchen";
+	selectElement.style.display = "block";
+	selectElement.size = networks.length;
+}
+
+// Funktion, die beim Klicken auf den Scan-Button aufgerufen wird
+function scanClick() {
+    // Führe den WLAN-Scan durch und rufe dann die Funktion zum Anzeigen der Netzwerke auf
+    fetch("/listwifi")
+    .then(response => response.json())
+    .then(data => {
+        showNetworks(data.networks);
+    })
+    .catch(error => {
+        console.error('Error fetching networks:', error);
+    });
+}
+
+function selectNetwork(select) {
+            var ssidInput = document.getElementById("ssid");
+            ssidInput.value = select.value; // Setze den Wert des Textfelds auf die ausgewählte SSID
+}
+		
+
+// Finde den Button im DOM (Document Object Model)
+var scanButton = document.getElementById("scanButton");
+
+// Füge einen Event Listener hinzu, der die scanClick-Funktion aufruft, wenn der Button geklickt wird
+scanButton.addEventListener("click", function() {
+    scanClick();
+	var scanButton = document.getElementById("scanButton");
+    scanButton.disabled = true;
+    scanButton.textContent = "Bitte warten...";
+});
+
+function removeresponse() {
+    document.getElementById("serverResponse").style.display = "none";
+}
+
+function toggleWiFiSettings() {
+    var wlanmode1 = document.getElementById("wlanmode1");
+    var wlanmode2 = document.getElementById("wlanmode2");
+    var wlanmode3 = document.getElementById("wlanmode3");
+    document.getElementById("serverResponse").style.display = "none";
+
+    if (wlanmode1.checked) {
+        WiFiSettings1.style.display = "block";
+        document.getElementById('wlanmode1').checked = true;
+        WiFiSettings2.style.display = "none";
+    }
+    if (wlanmode2.checked) {
+        WiFiSettings2.style.display = "block";
+        document.getElementById('wlanmode2').checked = true;
+        WiFiSettings1.style.display = "none";
+    }           
+}
+
+</script>

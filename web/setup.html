@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intex Poollampe</title>
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Intex Poollampe</h2>
+
+        
+        <div class="button-group-large">
+            <a href="start.html" class="blue-button">Farbe beim Start</a>
+            <a href="colors.html" class="blue-button">Farben konfigurieren</a>
+			<a href="sync.html" class="blue-button">Farben syncronisieren</a>
+            <a href="temperatur.html" class="blue-button">DS18B20-Sensoren</a>
+			<a href="gpio.html" class="blue-button">GPIO</a>
+			<a href="mqtt.html" class="blue-button">MQTT</a>
+			<a href="wifi.html" class="blue-button">WiFi-Setup</a>
+			<a href="fs.html" class="blue-button">Filesystem</a>
+			<a href="update" class="blue-button">Update</a>
+			<a href="index.html" class="red-button">Zurück</a>
+        </div>
+
+        <footer>
+    <p><div id="build" style=""></div></p>
+        </footer>
+    </div>
+</body>
+</html>
+<script>
+const version = "11";
+let einheiten = 1;
+
+function fetchData() {
+	fetch("/data")
+	.then(response => response.json())
+	.then(data => {
+		document.getElementById("build").innerHTML = `${data.build}/` + version + ' by Andreas Borchert';
+		
+	})
+	.catch(error => {
+		console.error('Error fetching data:', error);
+		});
+}
+
+ fetchData();
+ setInterval(fetchData, 2000); // Aktualisiere Daten alle 5 Sekunden
+</script>
