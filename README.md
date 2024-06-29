@@ -1,6 +1,6 @@
 ### <center>Intex Poollampe</center>
 ![S1S2](/img/Web.png?raw=true "Weboberfläche" | width=100)
-<img src="/img/Web.png" width="100" height="100">
+<img src="/img/Web.png" width="150">
 **Benötigte Hardware**
 - Nodemcu8266
 - 4 kurze Kabel
