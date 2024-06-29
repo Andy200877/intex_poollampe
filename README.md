@@ -1,4 +1,5 @@
 ### <center>Intex Poollampe</center>
+![S1S2](/img/web.png?raw=true "Weboberfläche")
 
 **Benötigte Hardware**
 - Nodemcu8266
@@ -19,7 +20,8 @@ Stelle nun die Verbindungen wie in den Bildern beschrieben her.
 
 Falls Du die erste Version der Poollampe nutzt, bitte die Verkabelung anpassen, da der D3 Anschluss am ESP nicht mehr verwendet wird.
 
-![VINGND](/img/nodemcu-vin.png?raw=true "Optional Title")
+![VINGND](/img/nodemcu-vin.png?raw=true "VIN/GND")
+![S1S2](/img/S1S2.jpg?raw=true "S1 und S2")
 
 **DS18B20 Sensoren**
 Für den Anschluss der DS18B20 Sensoren kann der Anschluss D5,D6 oder D7 verwendet werden. Spannungsversorgung des DS18B20 an 3.3V des ESP. GND des Sensors an GND des ESP. Zwischen Datenleitung und 3.3V bitte noch einen 4,7kOhm Widerstand einsetzen.
