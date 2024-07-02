@@ -14,10 +14,12 @@ Zuerst müssen die 4 Kreuzschrauben aus dem Aussenteil der Lampe entfernt werden
 Danach lässt sich der Lampendeckel abheben.
 Stelle nun die Verbindungen wie in den Bildern beschrieben her.
 
-- Platine V- an GND des ESP
-- Platine V+ an VIN des ESP
-- Platine S1 an ESP D1
-- Platine S2 an ESP D2
+| Platine | ESP |
+| :------ |:---:|
+|    V-   | GND |
+|    V+   | VIN |
+|    S1   |  D1 |
+|    S2   |  D2 |
 
 Falls Du die erste Version der Poollampe nutzt, bitte die Verkabelung anpassen, da der D3 Anschluss am ESP nicht mehr verwendet wird.
 <img src="/img/nodemcu-vin.png" width="150">
