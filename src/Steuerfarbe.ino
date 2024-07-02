@@ -106,7 +106,7 @@ void changecolorS1() { //INNEN
     String stat = poolLampPrefix + "/" + macAddr + "/innen/stat_t";
     publishMessage(stat.c_str(), incolor[aktfarbeinnen].c_str());
     stat = poolLampPrefix + "/" + macAddr + "/innen/cmd_t";
-    publishMessage(stat.c_str(), outcolor[aktfarbeinnen].c_str());
+    publishMessage(stat.c_str(), incolor[aktfarbeinnen].c_str());
   }
 }
 
