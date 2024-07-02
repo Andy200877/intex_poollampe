@@ -55,9 +55,6 @@ Folgende Adressen müssen dabei angegeben werde : <br>
 | PoollampeHA.bin | 0x000000 |
 | littlefs.bin    | 0x200000 |
 
- @ 0x000000<br>
-littlefs.bin @ 0x200000<br>
-
 <img src="/img/Flashen_1.png" width="150">
 
 Im LittleFS sind sämtliche Configurationen und die Webseiten gespeichert, bei einem neuen Flashen oder eines Formatierens des Filesystems macht der ESP wieder einen AccessPoint auf und Ihr müsst Eure Einstellungen anpassen.
