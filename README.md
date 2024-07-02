@@ -49,9 +49,9 @@ In dieser Version der Lampe gibt es folgende Neuerungen :
 
 **Flashen**
 Zum Flashen empfehle ich das [Flash Download Tool von Espressif Systems](https://www.espressif.com/en/support/download/other-tools "Flash Download Tool") 
-Folgende Adressen müssen dabei angegeben werde : 
-PoollampeHA.bin @ 0x000000
-littlefs.bin @ 0x200000
+Folgende Adressen müssen dabei angegeben werde : <br>
+PoollampeHA.bin @ 0x000000<br>
+littlefs.bin @ 0x200000<br>
 
 <img src="/img/Flashen_1.png" width="150">
 
