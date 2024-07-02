@@ -49,8 +49,10 @@ In dieser Version der Lampe gibt es folgende Neuerungen :
 
 **Flashen**
 Zum Flashen empfehle ich das [Flash Download Tool von Espressif Systems](https://www.espressif.com/en/support/download/other-tools "Flash Download Tool") 
-Als Startadresse der Flashfirmware muss 0x000000 angegeben werden.
-Die Adresse für die littlefs.bin ist 0x200000.
+Folgende Adressen müssen dabei angegeben werde : 
+PoollampeHA.bin @ 0x000000
+littlefs.bin @ 0x200000
+
 <img src="/img/Flashen_1.png" width="150">
 
 Im LittleFS sind sämtliche Configurationen und die Webseiten gespeichert, bei einem neuen Flashen oder eines Formatierens des Filesystems macht der ESP wieder einen AccessPoint auf und Ihr müsst Eure Einstellungen anpassen.
