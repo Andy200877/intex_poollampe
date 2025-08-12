@@ -24,7 +24,7 @@
                 <table>
                     <tr>
                         <td align="left"><label for="mqttBroker">Broker : </label></td>
-                        <td align="left"><input type="text" minlength="7" maxlength="15" size="15" pattern="^((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$" id="mqttBroker" name="mqttBroker" onclick="removeresponse()"></td>
+                        <td align="left"><input type="text" minlength="7" maxlength="15" size="15" id="mqttBroker" name="mqttBroker" onclick="removeresponse()"></td>
                     </tr>
                     <tr>
                         <td align="left"><label for="mqttPort">Port : </label></td>
@@ -187,3 +187,4 @@ function toggleMqttRetainSettings() {
 }
 </script>
 </html>
+
